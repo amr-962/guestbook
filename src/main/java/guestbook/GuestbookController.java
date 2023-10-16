@@ -19,6 +19,7 @@ import io.github.wimdeblauwe.hsbt.mvc.HtmxResponse;
 import io.github.wimdeblauwe.hsbt.mvc.HxRequest;
 import jakarta.validation.Valid;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -105,6 +108,22 @@ class GuestbookController {
 		guestbook.save(form.toNewEntry());
 
 		return "redirect:/guestbook";
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@PutMapping(path = "/guestbook/{entry}")
+	String editEntry(@PathVariable Optional<GuestbookEntry> entry, @RequestParam String text, Model model) {
+
+		return entry.map(it -> {
+
+            it.setText(text);
+            it.setEdited(true);
+            it.setLastEditDate(LocalDateTime.now());
+            guestbook.save(it);
+
+			return "redirect:/guestbook";
+
+		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
 	/**

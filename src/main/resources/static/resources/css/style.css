@@ -22,3 +22,11 @@ blockquote {
 form#form {
 	padding: 0 1.25em;
 }
+
+.collapsible {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}

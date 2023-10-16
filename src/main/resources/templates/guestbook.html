@@ -34,15 +34,31 @@
 					</div>
 					<div class="card-body">
 						<blockquote class="entrytext" th:text="${entry.text}"></blockquote>
+                        <div sec:authorize="hasRole('ADMIN')" align="right" class="collapsible">
+                            Edit
+                        </div>
+                        <div class="hidden">
+                            <form role="form" class="gb-form" th:method="put" th:action="@{/guestbook/{id}(id=${entry.id})}" th:attr="data-entry-id=${entry.id}">
+                                <label for="text" th:text="#{guestbook.form.text}">Text</label><br /> 
+                                <textarea th:name="text" th:text="${entry.text}"></textarea><br />
+                                <input type="submit" class="btn btn-secondary" th:value="#{guestbook.form.edit}" value="Senden" />
+                            </form>
+                        </div>
 					</div>
 					<div class="card-footer">
-						<footer class="date" th:text="${#temporals.format(entry.date, 'dd. MMMM yyyy - HH:mm')}">Datum</footer>
+                        <footer class="date"> 
+                            <span th:text="${#temporals.format(entry.date, 'dd. MMMM yyyy - HH:mm')}" />
+                            <span th:if="${entry.edited}">
+                                <span style="float:right;" th:text="${#temporals.format(entry.lastEditDate, 'dd. MMMM yyyy - HH:mm')}" />
+                                <span style="float:right;"> last edited:&nbsp </span>
+                            </span>
+                        </footer>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<form method="post" role="form" class="gb-form" id="form" hx:post="@{/guestbook}" hx-target="#entries" hx-swap="beforeend" _="on entryAdded me.reset()" th:action="@{/guestbook}" th:object="${form}">
+		<form method="post" role="form" class="gb-form" id="form" th:action="@{/guestbook}" th:object="${form}">
 			<div class="form-group">
 				<label for="name" th:text="#{guestbook.form.name}">Name</label><br /> 
 				<input class="form-control" type="text" th:field="*{name}" th:errorclass="is-invalid" required="required" />
@@ -56,5 +72,18 @@
 			<input type="submit" class="btn btn-secondary" th:value="#{guestbook.form.submit}" value="Senden" />
 		</form>
 
+    <script>
+        var buttons = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                content.style.display = (content.style.display == "block" ? "none" : "block");
+            });
+        }
+
+    </script>
 	</body>
 </html>

@@ -34,8 +34,11 @@ import org.springframework.util.Assert;
 class GuestbookEntry {
 
 	private @Id @GeneratedValue Long id;
-	private final String name, text;
+	private final String name;
+    private String text;
+    private Boolean edited;
 	private final LocalDateTime date;
+	private LocalDateTime lastEditDate;
 
 	/**
 	 * Creates a new {@link GuestbookEntry} for the given name and text.
@@ -51,6 +54,8 @@ class GuestbookEntry {
 		this.name = name;
 		this.text = text;
 		this.date = LocalDateTime.now();
+        this.edited = false;
+        this.lastEditDate = date;
 	}
 
 	@SuppressWarnings("unused")
@@ -74,5 +79,25 @@ class GuestbookEntry {
 
 	public String getText() {
 		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Boolean getEdited() {
+		return edited;
+	}
+
+	public void setEdited(Boolean edited) {
+		this.edited = edited;
+	}
+
+	public LocalDateTime getLastEditDate() {
+		return lastEditDate;
+	}
+
+	public void setLastEditDate(LocalDateTime lastEditDate) {
+		this.lastEditDate = lastEditDate;
 	}
 }
